@@ -1,130 +1,130 @@
 # DeepWiki Scraper
 
-Um utilitário de linha de comando para extrair conteúdo de projetos DeepWiki e exportá-los como arquivos JSON e Markdown.
+A command-line utility to extract content from DeepWiki projects and export them as JSON and Markdown files.
 
-## 📑 Descrição
+## Description
 
-DeepWiki Scraper é uma ferramenta Node.js/TypeScript que automatiza a extração de documentação de wikis hospedadas na plataforma DeepWiki. A ferramenta navega por cada página de um ou mais projetos especificados, extrai o conteúdo e compila um documento único em formato JSON e Markdown para referência offline ou integração com outras ferramentas.
+DeepWiki Scraper is a Node.js/TypeScript tool that automates the extraction of documentation from wikis hosted on the DeepWiki platform. The tool navigates through each page of one or more specified projects, extracts the content, and compiles a single document in both JSON and Markdown formats for offline reference or integration with other tools.
 
-## ✨ Recursos
+## Features
 
-- **Múltiplos Projetos**: Extrai conteúdo de vários projetos DeepWiki em uma única execução
-- **Entrada Interativa**: Interface de linha de comando para inserir URLs separadas por vírgula
-- **Navegação Automática**: Extrai todas as páginas automaticamente a partir do menu de navegação
-- **Exportação Flexível**: Salva o conteúdo em formato JSON para processamento e Markdown para leitura
-- **Nomeação Inteligente**: Os arquivos são nomeados automaticamente com base no nome do projeto
-- **Tratamento de Erros**: Lida graciosamente com timeouts e erros de carregamento de página
+- **Multiple Projects**: Extract content from various DeepWiki projects in a single run
+- **Interactive Input**: Command-line interface for entering comma-separated URLs
+- **Automatic Navigation**: Extracts all pages automatically from the navigation menu
+- **Flexible Export**: Saves content in JSON format for programmatic processing and Markdown for reading
+- **Smart Naming**: Files are automatically named based on the project name
+- **Error Handling**: Gracefully handles timeouts and page loading errors
 
-## 🔧 Pré-requisitos
+## Prerequisites
 
-- Node.js (versão 14 ou superior)
-- npm ou yarn
+- Node.js (version 14 or higher)
+- npm or yarn
 
-## 🚀 Instalação
+## Installation
 
-1. Clone este repositório:
+1. Clone this repository:
    ```bash
-   git clone https://github.com/SEU_USUARIO/deepwiki-scraper.git
-   cd deepwiki-scraper
+   git clone https://github.com/DantonTomacheski/deepwiki-scrap-md.git
+   cd deepwiki-scrap-md
    ```
 
-2. Instale as dependências:
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-## 💻 Como Usar
+## How to Use
 
-### Executando a Ferramenta
+### Running the Tool
 
 ```bash
 npm start
 ```
 
-### Fornecendo URLs
+### Providing URLs
 
-Quando solicitado, insira uma ou mais URLs de projetos DeepWiki separadas por vírgula:
-
-```
-Digite as URLs dos projetos separadas por vírgula:
-https://deepwiki.com/Usuario/projeto1, https://deepwiki.com/Usuario/projeto2
-```
-
-### Formato das URLs
-
-Cada URL deve apontar para a página principal de um projeto DeepWiki:
+When prompted, enter one or more DeepWiki project URLs separated by commas:
 
 ```
-https://deepwiki.com/Usuario/nome-do-projeto
+Enter project URLs separated by commas:
+https://deepwiki.com/Username/project1, https://deepwiki.com/Username/project2
 ```
 
-### Arquivos de Saída
+### URL Format
 
-Para cada projeto, dois arquivos serão gerados:
-
-- `nome-do-projeto.deepwiki.json`: Conteúdo em formato JSON para processamento programático
-- `nome-do-projeto.deepwiki.md`: Conteúdo em formato Markdown para leitura humana
-
-## 🛠️ Tecnologias Utilizadas
-
-- **TypeScript**: Tipagem estática para melhor qualidade de código
-- **Playwright**: Automação de navegador para extração de conteúdo
-- **Node.js**: Ambiente de execução
-
-## 📋 Estrutura do Projeto
+Each URL should point to the main page of a DeepWiki project:
 
 ```
-deepwiki-scraper/
-├── scrape-all.ts       # Script principal
-├── package.json        # Dependências e scripts
-├── tsconfig.json       # Configuração do TypeScript
-└── README.md           # Documentação
+https://deepwiki.com/Username/project-name
 ```
 
-## 📊 Formato de Saída
+### Output Files
+
+For each project, two files will be generated:
+
+- `project-name.deepwiki.json`: Content in JSON format for programmatic processing
+- `project-name.deepwiki.md`: Content in Markdown format for human reading
+
+## Technologies Used
+
+- **TypeScript**: Static typing for better code quality
+- **Playwright**: Browser automation for content extraction
+- **Node.js**: Runtime environment
+
+## Project Structure
+
+```
+deepwiki-scrap-md/
+├── scrape-all.ts       # Main script
+├── package.json        # Dependencies and scripts
+├── tsconfig.json       # TypeScript configuration
+└── README.md           # Documentation
+```
+
+## Output Format
 
 ### JSON
 
-O arquivo JSON segue esta estrutura:
+The JSON file follows this structure:
 
 ```json
 {
-  "Título da Página 1": "Conteúdo da Página 1",
-  "Título da Página 2": "Conteúdo da Página 2",
+  "Page Title 1": "Page Content 1",
+  "Page Title 2": "Page Content 2",
   ...
 }
 ```
 
 ### Markdown
 
-O arquivo Markdown segue esta estrutura:
+The Markdown file follows this structure:
 
 ```markdown
-## Título da Página 1
+## Page Title 1
 
-Conteúdo da Página 1
+Page Content 1
 
 ---
 
-## Título da Página 2
+## Page Title 2
 
-Conteúdo da Página 2
+Page Content 2
 
 ---
 ```
 
-## 🤝 Contribuindo
+## Contributing
 
-Contribuições são bem-vindas! Sinta-se à vontade para:
+Contributions are welcome! Feel free to:
 
-1. Abrir issues para relatar bugs ou solicitar recursos
-2. Enviar pull requests com melhorias
-3. Melhorar a documentação
+1. Open issues to report bugs or request features
+2. Submit pull requests with improvements
+3. Improve documentation
 
-## 📜 Licença
+## License
 
-Este projeto está licenciado sob a licença MIT - veja o arquivo LICENSE para mais detalhes.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## ⚠️ Aviso Legal
+## Legal Disclaimer
 
-Esta ferramenta foi criada para facilitar o acesso legítimo a conteúdo DeepWiki para fins de backup pessoal ou uso offline. Respeite os termos de serviço da plataforma DeepWiki e os direitos autorais de conteúdo de terceiros.
+This tool was created to facilitate legitimate access to DeepWiki content for personal backup or offline use. Please respect the terms of service of the DeepWiki platform and third-party content copyrights.
