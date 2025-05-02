@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.json
+*.md
+!README.md
+!package.json
+!tsconfig.json
+*.png
