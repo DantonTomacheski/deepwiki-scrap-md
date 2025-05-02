@@ -67,13 +67,13 @@ For each project, two files will be generated:
 
 ## 📸 Screenshots
 
-![DeepWiki Original Page](src/images/deepwiki-page-example.png)
-*Original DeepWiki page with navigation, scripts, and other elements*
+![Markdown extracted](src/images/mkdown-example.png)
+*Markdown extracted from DeepWiki page*
 
-![Extracted Clean Markdown](src/images/extracted-markdown-example.png)
-*The same content extracted as clean, readable Markdown*
+![JSON extracted](src/images/json-example.png)
+*JSON extracted from DeepWiki page*
 
-![Scraping Process Flow](src/images/scraping-flow-diagram.png)
+![Scraping Process Flow](src/images/scraping-process.png)
 *Flow of data from DeepWiki page to clean output files*
 
 ## Technologies Used
