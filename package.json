@@ -1,15 +1,18 @@
 {
-  "name": "scrap",
+  "name": "deepwiki-scraper",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A command-line utility to extract content from DeepWiki projects and export them as JSON and Markdown files",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "ts-node scrape-all.ts",
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "lint": "eslint . --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["scraper", "deepwiki", "markdown", "json", "extraction"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.15.3",
     "ts-node": "^10.9.2",
