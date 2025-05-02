@@ -21,8 +21,19 @@ export class UrlParser {
    * @returns Project name
    */
   public getProjectNameFromUrl(url: string): string {
-    const parts = url.split('/');
-    return parts[parts.length - 1];
+    // Remove trailing slash if present
+    const cleanUrl = url.endsWith('/') ? url.slice(0, -1) : url;
+    
+    // Split the URL by '/' and get the last part
+    const parts = cleanUrl.split('/');
+    const projectName = parts[parts.length - 1];
+    
+    // If empty, try to get the part before (might be a project name)
+    if (!projectName && parts.length > 2) {
+      return parts[parts.length - 2];
+    }
+    
+    return projectName || 'unknown-project';
   }
 
   /**

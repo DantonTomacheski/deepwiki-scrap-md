@@ -65,6 +65,17 @@ For each project, two files will be generated:
 - `project-name.deepwiki.json`: Content in JSON format for programmatic processing
 - `project-name.deepwiki.md`: Content in Markdown format for human reading
 
+## 📸 Screenshots
+
+![DeepWiki Original Page](src/images/deepwiki-page-example.png)
+*Original DeepWiki page with navigation, scripts, and other elements*
+
+![Extracted Clean Markdown](src/images/extracted-markdown-example.png)
+*The same content extracted as clean, readable Markdown*
+
+![Scraping Process Flow](src/images/scraping-flow-diagram.png)
+*Flow of data from DeepWiki page to clean output files*
+
 ## Technologies Used
 
 - **TypeScript**: Static typing for better code quality

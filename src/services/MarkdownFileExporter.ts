@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { IFileExporter } from '../interfaces/IFileExporter';
+import { TextCleaner } from '../utils/TextCleaner';
 
 /**
  * Concrete implementation for exporting to Markdown files
@@ -20,7 +21,9 @@ export class MarkdownFileExporter implements IFileExporter {
         
         // Generate markdown content from the record
         for (const [title, text] of Object.entries(content)) {
-          markdown += `## ${title}\n\n${text}\n\n---\n\n`;
+          // Aplicar limpeza adicional no conteúdo
+          const cleanedText = TextCleaner.cleanText(text);
+          markdown += `## ${title}\n\n${cleanedText}\n\n---\n\n`;
         }
         
         // Create output directory if it doesn't exist
