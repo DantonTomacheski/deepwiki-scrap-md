@@ -5,4 +5,3 @@ dist/
 !README.md
 !package.json
 !tsconfig.json
-*.png
