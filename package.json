@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
+    "scrape": "ts-node src/index.ts",
     "build": "tsc",
     "dev": "ts-node-dev --respawn src/index.ts",
     "lint": "eslint . --ext .ts",
