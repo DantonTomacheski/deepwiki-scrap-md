@@ -5,6 +5,7 @@ import { ILinkExtractor } from '../interfaces/ILinkExtractor';
 import { LinkItem } from '../models/LinkItem';
 import { UrlParser } from '../utils/UrlParser';
 import { FrameworksDatabase } from '../utils/FrameworksDatabase';
+import { NAVIGATION_SELECTORS } from '../utils/NavigationSelectors';
 
 interface WorkerTask {
   link: LinkItem;
@@ -300,22 +301,26 @@ export class ParallelDocScraperService {
         // Extract additional links (for deeper navigation)
         let newLinks: LinkItem[] = [];
         try {
-          // First check if our link extractor supports the docsRoot parameter
-          if (typeof (this.linkExtractor as any).extractLinks === 'function' && 
-              (this.linkExtractor as any).extractLinks.length >= 2) {
-            // Use the extended signature if available (GenericLinkExtractor)
-            newLinks = await (this.linkExtractor as any).extractLinks(page, this.docsRoot);
-          } else {
-            // Use standard signature (original LinkExtractor interface)
-            newLinks = await this.linkExtractor.extractLinks(page);
-          }
+          // Skip trying to re-find the nav menu on every worker page.
+          // Just extract all links and let filterAndNormalizeLinks handle scoping.
+          newLinks = await this.extractAllLinks(page);
           
-          // Filter and normalize links
+          // Filter and normalize links (This is still crucial!)
           newLinks = this.filterAndNormalizeLinks(newLinks, baseUrl);
         } catch (error) {
           console.log(`⚠️ Worker ${workerId} could not extract links from ${link.title}`);
           // Continue with empty links list
         }
+        
+        // **Optimization: Block unnecessary resources**
+        await page.route('**/*', (route) => {
+          const resourceType = route.request().resourceType();
+          if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
+            route.abort();
+          } else {
+            route.continue();
+          }
+        });
         
         return { 
           link, 
@@ -357,29 +362,8 @@ export class ParallelDocScraperService {
    * @private
    */
   private async extractNavigationLinks(page: Page): Promise<LinkItem[]> {
-    const navSelectors = [
-      'nav a',
-      'aside a',
-      '.sidebar a',
-      '.navigation a',
-      '.menu a',
-      '.toc a',
-      'ul.space-y-1 li a',
-      '[role="navigation"] a',
-      '.docs-navigation a',
-      '.menu-list a',
-      '.doc-nav a',
-      '.table-of-contents a',
-      '.sidebar-menu a',
-      '[role="menu"] a',
-      '.docs-menu a',
-      '.menu-wrapper a',
-      '[data-testid="sidebar"] a',
-      '.sidebar-links a',
-      '.docs-sidebar a'
-    ];
-    
-    for (const selector of navSelectors) {
+    // Try various common navigation selectors
+    for (const selector of NAVIGATION_SELECTORS) {
       try {
         const links = await page.$$eval(
           selector,
@@ -599,54 +583,67 @@ export class ParallelDocScraperService {
    * @private
    */
   private filterAndNormalizeLinks(links: LinkItem[], baseUrl: string): LinkItem[] {
-    return links
+    const filteredLinks = links
       .filter(link => {
         const normalizedUrl = this.normalizeUrl(link.href, baseUrl);
-        
+        let keepLink = true;
+
         // Skip already visited URLs
         if (this.isUrlVisited(normalizedUrl)) {
-          return false;
+          keepLink = false;
         }
         
         // Skip external links
-        if (link.href.startsWith('http') && !link.href.startsWith(baseUrl)) {
-          return false;
+        if (keepLink && link.href.startsWith('http') && !link.href.startsWith(baseUrl)) {
+          keepLink = false;
         }
         
         // Skip anchor links
-        if (link.href.startsWith('#')) {
-          return false;
+        if (keepLink && link.href.startsWith('#')) {
+          keepLink = false;
         }
         
         // Skip media files
-        if (link.href.match(/\.(jpg|jpeg|png|gif|svg|pdf|zip|js|css)$/i)) {
-          return false;
+        if (keepLink && link.href.match(/\.(jpg|jpeg|png|gif|svg|pdf|zip|js|css)$/i)) {
+          keepLink = false;
         }
         
         // IMPORTANT: Stay within the same project scope
-        // For example, if we're scraping /query/, don't go to /table/ or /form/
-        if (this.projectPath && normalizedUrl.includes(baseUrl)) {
+        if (keepLink && this.projectPath && normalizedUrl.includes(baseUrl)) {
           const urlPath = new URL(normalizedUrl).pathname;
-          if (!urlPath.startsWith(this.projectPath) && !urlPath.includes(this.projectPath)) {
-            // This link goes to a different project, skip it
-            return false;
+          const startsWithProjectPath = this.projectPath && urlPath.startsWith(this.projectPath);
+          const startsWithDocsRoot = this.docsRoot && urlPath.startsWith(this.docsRoot);
+          
+          if (!startsWithProjectPath && !startsWithDocsRoot) {
+             // Check if the path includes the projectPath (less strict)
+             if (!urlPath.includes(this.projectPath)) {
+               keepLink = false;
+             }
           }
         }
-        
-        // If a framework segment was detected, ensure we stay within it
-        if (this.frameworkSegment) {
-          const urlPath = new URL(normalizedUrl).pathname.toLowerCase();
-          if (!urlPath.includes(`/${this.frameworkSegment}/`)) {
-            return false;
+
+        // Framework Scope Check
+        if (keepLink && this.frameworkSegment) {
+          const linkPathSegments = new URL(normalizedUrl).pathname.split('/').filter(Boolean);
+          const detectedFrameworksInLink = FrameworksDatabase.detectFrameworks(linkPathSegments);
+          
+          if (detectedFrameworksInLink.length > 0) {
+            // NEW LOGIC: Skip only if the target framework is NOT present among the detected ones
+            const targetFrameworkPresent = detectedFrameworksInLink.includes(this.frameworkSegment);
+            if (!targetFrameworkPresent) {
+               keepLink = false;
+            } 
           }
         }
-        
-        return true;
+
+        return keepLink;
       })
       .map(link => ({
         title: link.title,
         href: link.href
       }));
+      
+    return filteredLinks;
   }
 
   /**
